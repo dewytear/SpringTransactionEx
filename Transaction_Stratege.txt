@@ -21,4 +21,4 @@
 		. doInTrasaction() 메소드를 구현
 		
 	- TransactionCallbackWithoutResult를 사용(리턴값이 없는 경우)
-		. doInTrasaction() 메소드를 구현
+		. doInTransactionWithoutResult() 메소드를 구현
