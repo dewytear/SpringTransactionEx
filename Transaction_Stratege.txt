@@ -1,0 +1,10 @@
+[트랜잭션 전략]
+	spring에서 제공하는 프로그래밍적인 트랜잭션 관리 방법
+ 
+ # PlatformTransactionManager 사용하는 방법
+ 
+ 	- 클래스 : org.springframework.jdbc.datasource.DataSourceTransactionManager
+ 
+	- TransactionDefinition와 TransactionStatus 객체를 사용
+		. 트랜잭션 초기화
+		. 트랜잭션 커밋(commit), 롤백(rollback)

@@ -12,6 +12,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
  * @CLASS Name
@@ -32,6 +36,13 @@ import org.springframework.stereotype.Service;
 public class BuyDAO {
 
 	JdbcTemplate template;
+	PlatformTransactionManager transactionManager;
+	
+	//servlet-context.xml 의 transactionManager bean에 연결하여 DB 연결하기 위해 Autowired Annotation 연결
+	@Autowired
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
 	
 	//Static template을 쓰지 않기 때문에 Autowired Annotation 연결 한다..
 	@Autowired
@@ -44,26 +55,42 @@ public class BuyDAO {
 		System.out.println("구매 고객 아이디 : " + buyVO.getUserId());
 		System.out.println("구매 티켓 수량 : " + buyVO.getAmount());
 		
-		template.update(new PreparedStatementCreator(){
-			@Override
-			public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
-				String strQuery = "insert into EX_CARD(NM_USER, AMOUNT) values(?, ?)";
-				PreparedStatement ps = conn.prepareStatement(strQuery);
-				ps.setString(1, buyVO.getUserId());
-				ps.setInt(2, Integer.parseInt(buyVO.getAmount()));
-				
-				return ps;
-			}
-		});
+		/*
+		 * - TransactionDefinition와 TransactionStatus 객체를 사용
+		 * . 트랜잭션 초기화
+		 * . 트랜잭션 커밋(commit), 롤백(rollback)
+		 */
+		TransactionDefinition def = new DefaultTransactionDefinition();
+		TransactionStatus status = transactionManager.getTransaction(def);
 		
-		String strQuery = "insert into EX_TICKET(NM_USER, CNT) values(?, ?)";
-		template.update(strQuery, new PreparedStatementSetter() {
-			@Override
-			public void setValues(PreparedStatement preparedStatement) throws SQLException{
-				preparedStatement.setString(1, buyVO.getUserId());
-				preparedStatement.setInt(2, Integer.parseInt(buyVO.getAmount()));
-			}
-		});
+		try {
+			template.update(new PreparedStatementCreator(){
+				@Override
+				public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+					String strQuery = "insert into EX_CARD(NM_USER, AMOUNT) values(?, ?)";
+					PreparedStatement ps = conn.prepareStatement(strQuery);
+					ps.setString(1, buyVO.getUserId());
+					ps.setInt(2, Integer.parseInt(buyVO.getAmount()));
+					
+					return ps;
+				}
+			});
+			
+			String strQuery = "insert into EX_TICKET(NM_USER, CNT) values(?, ?)";
+			template.update(strQuery, new PreparedStatementSetter() {
+				@Override
+				public void setValues(PreparedStatement preparedStatement) throws SQLException{
+					preparedStatement.setString(1, buyVO.getUserId());
+					preparedStatement.setInt(2, Integer.parseInt(buyVO.getAmount()));
+				}
+			});
+			
+			transactionManager.commit(status);
+		}
+		catch(Exception e){
+			transactionManager.rollback(status);
+			e.printStackTrace();
+		}
 		
 	}//buyTicket
 }
