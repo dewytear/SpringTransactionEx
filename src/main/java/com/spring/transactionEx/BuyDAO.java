@@ -33,7 +33,7 @@ public class BuyDAO {
 
 	JdbcTemplate template;
 	
-	//Static template을 쓰지 않기 때문에 Autowired Annotation 연결 한다.
+	//Static template을 쓰지 않기 때문에 Autowired Annotation 연결 한다..
 	@Autowired
 	public void setTemplate(JdbcTemplate template) {
 		this.template = template;
