@@ -8,3 +8,17 @@
 	- TransactionDefinition와 TransactionStatus 객체를 사용
 		. 트랜잭션 초기화
 		. 트랜잭션 커밋(commit), 롤백(rollback)
+		
+ # TransactionTemplate 사용하는 방법 (위의 방법보다 많이 사용됨)
+	Callback 접근 방법을 사용하는 방식
+	리소스 획득과 해제작업으로부터 어플리케이션 코드를 해방시켜주는 방법
+	(try/catch/finally를 할 필요없음)
+	
+	일반호출 : 주체가 함수에 작업을 맏기고 결과를 받아옴
+	Callback호출 : OS에서 이벤트가 발생하면 호출이되는 개념
+	
+	- TransactionCallback 인터페이스 구현객체를 사용(리턴값이 있는 경우)
+		. doInTrasaction() 메소드를 구현
+		
+	- TransactionCallbackWithoutResult를 사용(리턴값이 없는 경우)
+		. doInTrasaction() 메소드를 구현
