@@ -39,6 +39,12 @@ public class BuyDAO {
 	PlatformTransactionManager transactionManager;
 	
 	//servlet-context.xml 의 transactionManager bean에 연결하여 DB 연결하기 위해 Autowired Annotation 연결
+	/* Autowired Annotation을 사용하지 않는 방법은..
+	 * Service Annotation 제거하고 아래처럼 servlet-context.xml에 DAO객체에 transactionManager 연결을 해준다.
+	 * 	<beans:bean name="buydao" class="com.spring.transactionEx.BuyDAO">
+	 *	<beans:property name="transactionManager" ref="transactionManager"/>
+	 *	</beans:bean>
+	 */
 	@Autowired
 	public void setTransactionManager(PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;

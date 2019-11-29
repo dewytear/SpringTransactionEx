@@ -36,6 +36,12 @@
 		<beans:property name="dataSource" ref="dataSource"/>
 	</beans:bean>
 	
+	<!-- 
+	<beans:bean name="buydao" class="com.spring.transactionEx.BuyDAO">
+		<beans:property name="transactionManager" ref="transactionManager"/>
+	</beans:bean>
+	 -->
+	
 	<!-- com.spring 안의 모든 내용을 찾는다 -->
 	<context:component-scan base-package="com.spring" />
 	
